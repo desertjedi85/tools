@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Summarize An Article</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://bootswatch.com/spacelab/bootstrap.min.css">
+    <style>
+    #divLoadingGif
+    {
+    display : none;
+    }
+    #divLoadingGif.show
+    {
+    display : block;
+    position : fixed;
+    z-index: 100;
+    background-image : url('includes/images/loading.gif');
+    /* background-color:#fff; */
+    opacity : 0.6;
+    background-repeat : no-repeat;
+    background-position : inherit;
+    left : 25%;
+    bottom : 0;
+    right : 0;
+    top : 50%;
+    margin: 0 auto;
+    }
+    #divLoadingGif.hide {
+        display: none;
+    }
+    #loadinggif.show
+    {
+    left : 50%;
+    top : 50%;
+    position : absolute;
+    z-index : 101;
+    width : 32px;
+    height : 32px;
+    margin-left : -16px;
+    margin-top : -16px;
+    }
+    div.content {
+    width : 1000px;
+    height : 1000px;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <form class="form-inline"></form>
+                    <input type="text" class="form-control" id="url" name="url" placeholder="Enter URL...">
+                    <input type="submit" id="submit" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div id="divLoadingGif"></div><br><br>
+                <div class="panel panel-default" id="resultsPanel">
+                    <div id="displayResultsDiv"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+<script>
+    $("#resultsPanel").hide();
+
+    $("#submit").click(function(e) {
+        e.preventDefault();
+        $("#resultsPanel").hide();
+
+        var url = document.getElementById("url").value;
+
+        $.post("getAndSummarize.php", 
+            {url: url}, 
+            function(data) {
+                // $("div#divLoadingGif").removeClass('show');
+                $("div#divLoadingGif").removeClass('show');
+                $("div#divLoadingGif").addClass('hide');
+                $("#displayResultsDiv").html(data);
+            })
+            .done(function() {
+                $("#displayResultsDiv").show();
+                $("#resultsPanel").show();
+            })
+            .fail(function() {
+                // $("div#divLoadingGif").removeClass('show');
+                $("#divLoadingGif").removeClass('show');
+                $("#divLoadingGif").addClass('hide');
+                alert("Search Failed.  Please Try Again Later.");
+            });
+    });
+        
+    
+
+</script>    
+    
+</body>
+</html>
