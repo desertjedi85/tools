@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Copy to Clipboard</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://bootswatch.com/spacelab/bootstrap.min.css">
+</head>
+<body>
+<script src="node_modules/clipboard/dist/clipboard.min.js"></script>
+<br><br>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="panel panel-default" id="resultsPanel">
+                <div id="displayResultsDiv">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, cumque commodi obcaecati, odio exercitationem excepturi repudiandae quibusdam perferendis debitis amet, nostrum praesentium totam blanditiis neque a eius reprehenderit officiis. Nemo, nisi nulla beatae adipisci nobis nostrum soluta natus amet quas nesciunt aspernatur at repellat neque officia eius modi, earum voluptatibus.
+                </div>
+                <button class='btn btn-info'id ="btnCopy" data-clipboard-target="#displayResultsDiv">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    new Clipboard('#btnCopy');
+
+
+</script>
+    
+</body>
+</html>
