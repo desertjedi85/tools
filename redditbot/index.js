@@ -22,7 +22,7 @@ const r = new snoowrap({
   clientId: 'L9zd4fc4i0TjBQ',
   clientSecret: '37Ppkq6-oJzxp1pqtwIkhWB-3d4',
   username: 'news-summary',
-  password: 'F0rgeM@ster1'
+  password: '**********'
 });
 
 // That's the entire setup process, now you can just make requests.
