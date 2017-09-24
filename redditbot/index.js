@@ -17,13 +17,17 @@ const request = require('request');
 // });
 
 // Alternatively, just pass in a username and password for script-type apps.
+var config = require("./config/config.json");
+
 const r = new snoowrap({
-  userAgent: 'news-summary bot by /u/desertjedi85 v1.0',
-  clientId: 'L9zd4fc4i0TjBQ',
-  clientSecret: '37Ppkq6-oJzxp1pqtwIkhWB-3d4',
-  username: 'news-summary',
-  password: '**********'
-});
+    userAgent: 'news-summary bot by /u/desertjedi85 v1.0',
+    clientId: config.clientId,
+    clientSecret: config.clientSecret,
+    username: config.username,
+    password: config.password
+  });
+
+
 
 // That's the entire setup process, now you can just make requests.
 
@@ -48,6 +52,7 @@ r.getRising('news').map(post => post).forEach(function(postId, index) {
         console.log(body);
       });
 });
+
 // console.log(JSON.stringify(posts));
 
 // r.getRising('news').then({
