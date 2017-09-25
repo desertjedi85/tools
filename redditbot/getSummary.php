@@ -5,23 +5,49 @@ ini_set('max_execution_time', 200);
 
 // require("/home/searchcu/public_html/vendor/autoload.php");
 require("vendor/autoload.php");
+require("config/dbconfig.php");
 
 use Goose\Client as GooseClient;
 use PhpScience\TextRank\Tool\StopWords\English;
 
-if (isset($_POST["url"])) {
+// return $_POST;
+
+if (isset($_POST["url"]) && isset($_POST["id"])) {
     $articleUrl = $_POST["url"];
+    $id = $_POST["id"];
 } else {
-    $articleUrl = "https://japantoday.com/category/national/U.S.-Navy-carrier-conducts-drills-with-Japan%27s-MSDF-amid-N-Korean-tension";
-    // $query = "war";
-    // $query = str_replace(" ", "+", $query);
+    $id = "72cqos";
+    $articleUrl = "https://www.eurekalert.org/pub_releases/2017-09/ncsu-st092517.php";
 }
-if (remoteURLExists($articleUrl)) {
-    echo getArticle($articleUrl);
+
+if (checkUrlBlacklist($articleUrl) === true) {
+    echo "Blacklisted url: $articleUrl\r\n";
+    return false;
 }
+
+
+if (checkAlreadyPosted($id) === true) {
+    echo "Already posted: $id\r\n";
+    // return;
+    return false;
+// }
+} else {
+    if (remoteURLExists($articleUrl)) {
+        if ($articleSummary = getArticle($articleUrl)) {
+            echo $articleSummary;
+            updateDB($id);
+        } else {
+            echo "Article summary failed\r\n";
+        }
+    } else {
+        echo "Article not found\r\n";
+    }
+}
+
 
 function getArticle($url) {
     $goose = new GooseClient();
+    
     $article = $goose->extractContent($url);
     
     if ($articleText = $article->getCleanedArticleText()) { // Investigate if this is where things are being slowed down
@@ -41,7 +67,11 @@ function getArticle($url) {
         }
         // $articleArray[] = $string;
         // return $articleArray;
-        return $string;
+        if (strlen($string) > 1500) {
+            return "Article length too long";
+        } else {
+            return $string;
+        }
     } else {
         // $errorArrayNoText[] = $url;
         // echo "Article not parsed<br>";
@@ -67,7 +97,48 @@ function summarize($articleText,&$resultsArray) {
     // Array of the most important sentences from the text:
     // $result = $api->summarizeTextBasic($text);
     // return $result;
-    // print_r($result);
+    // print_r($resultsArray);
+}
+
+function checkAlreadyPosted($id) {
+    $mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    if ($mysqli->connect_errno) {
+        echo "Errno: " . $mysqli->connect_errno . "\n";
+        echo "Error: " . $mysqli->connect_error . "\n";
+        // exit();
+        //TODO: Add error table
+    }
+
+    $result = $mysqli->query("SELECT postId FROM replies WHERE postId = '$id'");
+    if ($result->num_rows == 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function updateDB ($id) {
+   
+    
+    $mysqli = new \mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    if ($mysqli->connect_errno) {
+        echo "Errno: " . $mysqli->connect_errno . "\n";
+        echo "Error: " . $mysqli->connect_error . "\n";
+        // exit();
+        //TODO: Add error table
+    }
+    $stmt = $mysqli->prepare("INSERT INTO replies (postId) VALUES (?)");
+    $stmt->bind_param('s', $id);
+    $stmt->execute();
+    // echo "URL Added Successfully.";
+}
+
+function checkUrlBlacklist($url) {
+    if (preg_match("/twitter\.com.*/i",$url)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function remoteURLExists($url) {
