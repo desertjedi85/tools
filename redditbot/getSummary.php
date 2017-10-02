@@ -16,8 +16,9 @@ if (isset($_POST["url"]) && isset($_POST["id"])) {
     $articleUrl = $_POST["url"];
     $id = $_POST["id"];
 } else {
-    $id = "72cqos";
-    $articleUrl = "https://www.eurekalert.org/pub_releases/2017-09/ncsu-st092517.php";
+    exit;
+    // $id = "72cqos";
+    // $articleUrl = "https://www.eurekalert.org/pub_releases/2017-09/ncsu-st092517.php";
 }
 
 if (checkUrlBlacklist($articleUrl) === true) {

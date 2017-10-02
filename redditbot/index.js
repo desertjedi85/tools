@@ -21,7 +21,7 @@ var config = require("./config/config.json");
 
 
 const r = new snoowrap({
-    userAgent: 'news-summary bot by /u/desertjedi85 v1.0',
+    userAgent: 'news-summary bot by /u/desertjedi85 v2.0',
     clientId: config.clientId,
     clientSecret: config.clientSecret,
     username: config.username,
@@ -41,17 +41,112 @@ const r = new snoowrap({
 // Printing a list of the titles on the front page
 // r.g
 var bodyParser = require('body-parser');
-// var subreddits = ["legalnews"];
-var subreddits = ["worldevents", "upliftingnews", "truereddit", "funny", "nottheonion", "psychology", "newsbotbot", "autonewspaper", "energy", "environment", "US Politics", "World Politics", "tech", "the_donald", "apandreuters", "livenews", "forgottennews", "legalnews"];
-// Subreddits: worldevents, upliftingnews, truereddit, funny, nottheonion, psychology, newsbotbot, energy, environment, US Politics, World Politics, tech, the_donald, apandreuters, livenews, legalnews
-// Subreddits banned from: worldnews, businessnews, usanews, news, politics
-subreddits.forEach(function(subreddit) {
-  getNew(subreddit);
-  getRising(subreddit);
-  getControversial(subreddit);
-  getTop(subreddit);
-  // console.log(subreddit);
-});
+
+getPosts();
+function getPosts() {
+  request.post({
+    // headers: {'content-type' : 'application/x-www-form-urlencoded'},
+    // headers: {'content-type' : 'application/x-www-form-urlencoded'},
+    url:     'http://localhost/tools/redditbot/getSubreddits.php'
+    }, function(error, response, body){
+      if(!error) {
+        // console.log(response.statusCode);
+        var subreddits = body.split("\n");
+        subreddits.forEach(function(subreddit) {
+          if (subreddit.match("\w+|\w+")) {
+            console.log("Retrieving subreddit " + subreddit);
+            getNew(subreddit);
+            getRising(subreddit);
+            getControversial(subreddit);
+            getTop(subreddit);
+          }
+        })
+      } else {
+        console.log("Error: " + error);
+      }
+    }
+  );
+}
+
+
+// function getPosts(subreddit) {
+//   getNew(subreddit);
+//   getRising(subreddit);
+//   getControversial(subreddit);
+//   getTop(subreddit);
+// }
+// var fs = require("fs");
+// var content;
+// fs.readFile('./includes/subreddits.csv', function read(err, data) {
+//     if (err) {
+//         throw err;
+//     }
+//     content = data;
+//     console.log(content);
+// });
+// var subreddits = new Array();
+// // const rp = require('request-promise');
+// const cheerio = require('cheerio');
+// // const options = {
+// //   uri: `http://redditlist.com/sfw`,
+// //   transform: function (body) {
+// //     return cheerio.load(body);
+// //   }
+// // };
+// var url = 'http://redditlist.com/sfw';
+// // rp(options)
+// //   .then(($) => {
+//   request('http://redditlist.com/sfw', (function(subreddits){
+//     // console.log(subreddits);
+//     return function(error, response, body){
+//       if(!error) {
+//         $ = cheerio.load(body);
+//         console.log($);
+//     // console.log($);
+//         $('.subreddit-url').each(function(i, elem) {
+//           subreddit = $(this).text();
+//           subreddits[i] = subreddit;
+//           // console.log(subreddit);
+//           // console.log($(this).text());
+          
+          
+//           // getPosts(subreddit);
+//         });
+        
+//       } else {
+//         console.log("Error: " + err);
+//       }
+//     };
+//     subreddits.forEach(function(subreddit) {
+//       getPosts(subreddit);
+//     });
+//   }));
+  // .catch((err) => {
+  //   console.log(err);
+  // });
+  // console.log(subreddits);
+  
+
+
+// getSubreddits(subreddits);
+// console.log(subreddits.length);
+// subreddits.forEach(function(subreddit) {
+//   console.log(subreddit);
+// });
+// var subreddits = text.split("\n");
+
+// var subreddits = ["sports"];
+// var subreddits = ["worldevents", "upliftingnews", "truereddit", "funny", "psychology", "newsbotbot", "autonewspaper", "energy", "environment", "US Politics", "World Politics", "tech", "apandreuters", "livenews", "forgottennews", "legalnews", "sports", "all"];
+// var subreddits = ["AskReddit ","politics ","The_Donald ","funny ","nba ","worldnews ","videos ","pics ","news ","todayilearned ","nfl ","soccer ","gaming ","gifs ","leagueoflegends ","aww ","BlackPeopleTwitter ","SquaredCircle ","movies ","DestinyTheGame ","rickandmorty ","dankmemes ","television ","relationships ","me_irl ","Overwatch ","WTF ","AdviceAnimals ","nottheonion ","Jokes ","fantasyfootball ","Showerthoughts ","hockey ","anime ","rupaulsdragrace ","technology ","DotA2 ","mildlyinteresting ","GlobalOffensive ","Games ","CFB ","IAmA ","europe ","Tinder ","hiphopheads ","CringeAnarchy ","freefolk ","NintendoSwitch ","baseball ","interestingasfuck ","CollegeBasketball ","quityourbullshit ","PUBATTLEGROUNDS ","MMA ","OldSchoolCool ","hearthstone ","2007scape ","science ","PrequelMemes ","trashy ","CrappyDesign ","pcmasterrace ","sports ","Rainbow6 ","PoliticalHumor ","de ","gameofthrones ","Ice_Poseidon ","trees ","FireEmblemHeroes ","startrek ","canada ","ProgrammerHumor ","youtubehaiku ","wholesomememes ","BigBrother ","UpliftingNews ","JUSTNOMIL ","iamverysmart ","Android ","conspiracy ","TwoXChromosomes ","Unexpected ","legaladvice ","Futurology ","StarWars ","starterpacks ","food ","TumblrInAction ","wow ","4chan ","ComedyCemetery ","formula1 ","Music ","tumblr ","KotakuInAction ","ukpolitics ","LifeProTips ","LivestreamFail ","Guildwars2 ","PublicFreakout ","photoshopbattles ","facepalm ","oddlysatisfying ","apple ","xboxone ","ATBGE ","australia ","LateStageCapitalism ","cowboys ","SubredditDrama ","bestof ","DIY ","personalfinance ","Competitiveoverwatch ","woahdude ","magicTCG ","cars ","india ","tifu ","oldpeoplefacebook ","therewasanattempt ","StarWarsBattlefront ","memes ","unitedkingdom ","funny ","AskReddit ","todayilearned ","science ","worldnews ","pics ","IAmA ","gaming ","videos ","movies ","aww ","Music ","gifs ","news ","explainlikeimfive ","askscience ","EarthPorn ","books ","television ","LifeProTips ","mildlyinteresting ","space ","Showerthoughts ","DIY ","Jokes ","sports ","gadgets ","tifu ","nottheonion ","InternetIsBeautiful ","photoshopbattles ","food ","history ","Futurology ","Documentaries ","dataisbeautiful ","listentothis ","UpliftingNews ","personalfinance ","GetMotivated ","OldSchoolCool ","philosophy ","Art ","nosleep ","creepy ","WritingPrompts ","TwoXChromosomes ","Fitness ","technology ","WTF ","bestof ","AdviceAnimals ","politics ","atheism ","europe ","interestingasfuck ","woahdude ","gameofthrones ","leagueoflegends ","pcmasterrace ","BlackPeopleTwitter ","reactiongifs ","trees ","Unexpected ","Overwatch ","oddlysatisfying ","Android ","wholesomememes ","programming ","Games ","facepalm ","nba ","4chan ","me_irl ","relationships ","cringepics ","lifehacks ","fffffffuuuuuuuuuuuu ","pokemon ","sex ","tattoos ","comics ","soccer ","Frugal ","pokemongo ","CrappyDesign ","OutOfTheLoop ","malefashionadvice ","StarWars ","buildapc ","YouShouldKnow ","dankmemes ","nfl ","HistoryPorn ","AskHistorians ","rickandmorty ","RoastMe ","loseit ","AnimalsBeingJerks ","FoodPorn ","NatureIsFuckingLit ","Whatcouldgowrong ","cringe ","travel ","PS4 ","baseball ","FiftyFifty ","Eyebleach ","RoomPorn ","hiphopheads ","wheredidthesodago ","mildlyinfuriating ","hearthstone ","anime ","Cooking ","GlobalOffensive ","freebies ","GifRecipes ","xboxone ","Tinder ","HighQualityGifs ","youtubehaiku ","bodyweightfitness ","AnimalsBeingBros ","comicbooks ","FortNiteBR ","SuperMindsofReddit ","subrivals ","TFABAARBI ","AccidentalAnime ","settlethisforme ","HeatSignature ","TheMaquis ","accidentalsurrealism ","ParanormalPSBattles ","FindMeFood ","BigBirdGifs ","waltonchain ","AmItheAsshole ","EvelynnMains ","StarTrekDiscovery ","iamveryrandom ","AmericanVandal ","magnetfishing ","MagicArena ","kybernetwork ","miniSNES ","comedyhomicide ","DestinyFashion ","2healthbars ","AccidentalSlapStick ","antiMLM ","eden ","LostLandsMusicFest ","saiyanpeopletwitter ","SugarPine7 ","Catswithjobs ","iamveryrich ","TheGoodPlace ","KinFoundation ","ABoringDystopia ","TheDeuceHBO ","DivinityOriginalSin ","KemonoFriends ","lgv30 ","rick_and_morty ","angrycatpics ","AdmiralBulldog ","FORTnITE ","kingsman ","IncrediblesMemes ","May2018Bumpers ","TheOrville ","Gross_Gore ","RPClipsGTA ","R6ProLeague ","Whatthefuckgetitoffme ","dontyouknowwhoiam ","Ice_Poseidon2 ","shockwaveporn ","CanadaPublicServants ","ToothAndTail ","azirmains ","600euro ","MadeInAbyss ","mvci ","hentai411 ","Siestakey ","INEEEEDIT ","Destiny_2 ","AreYouTheOne ","onionheadlines ","GeometryIsNeat ","SouthParkPhone ","bingingwithbabish ","perfectlycutscreams ","Superbowl ","electricdaisycarnival ","marijuanaenthusiasts ","tombstoning ","UnethicalLifeProTips ","Thinking ","coaxedintoasnafu ","Emma_Roberts ","LoveNikki ","MoviePassClub ","likeus ","hamptonbrandon ","ExpandDong ","CatastrophicFailure ","NavCoin ","InternetStars ","TbsPeopleofEarth ","conspiracyundone ","Death_By_SnuSnu ","nsfw_showerthoughts ","PinkOmega ","lossedits ","ihavesex ","gay_irl ","Bossfight ","GalaxyNote8 ","AprilBumpers2018 ","TenX ","Alt_Hapa ","AMADisasters ","assholedesign ","destiny2 ","The_Mueller ","CatTaps ","bladerunner ","freefolk ","Memes_Of_The_Dank ","IncelTears ","confusing_perspective ","ArkEcosystem ","raidsecrets ","TapTitans2 ","MUAontheCheap ","Xanaxcartel ","TerraBattle ","Animalsthatlovemagic ","KittenMittens ","WeWantPlates ","ChoosingBeggars ","antimeme ","iOS11 ","Prematurecelebration ","sploot ","Kings_Raid"];
+// subreddits.forEach(function(subreddit) {
+//   getNew(subreddit);
+//   getRising(subreddit);
+//   getControversial(subreddit);
+//   getTop(subreddit);
+//   // console.log(subreddit);
+// });
+
+
 // r.searchSubreddits({query: 'news'}).then(
   // console.log()
     // getNew(subreddit),
@@ -60,9 +155,57 @@ subreddits.forEach(function(subreddit) {
     // getTop(subreddit)
 // )
 
+function getSubreddits(subreddits) {
+  request.post({
+    headers: {'content-type' : 'application/x-www-form-urlencoded'},
+    // headers: {'content-type' : 'application/x-www-form-urlencoded'},
+    url:     'http://localhost/tools/redditbot/getSubreddits.php',
+    body:    ""
+    }, function(error, response, body){
+      if(!error) {
+        
+        // var articleSummary = body;
+
+        // if (articleSummary.match(/Blacklisted url/) || articleSummary.match(/Already posted/) || articleSummary.match(/Article summary failed/) || articleSummary.match(/Article not found/) || articleSummary.match(/PHP Warning/i) || articleSummary.match(/PHP Fatal/i) || articleSummary.match(/Article length too long/i)) {
+        //   console.log("Article not submitted: " + id + ": " + url);
+        // } else {
+        //   var string = "";
+        //   string += "\r\n";
+        //   string += "###Here is my best summary:";
+        //   string += "\r\n";
+        //   string += "\r\n";
+        //   string += articleSummary;
+        //   string += "\r\n";
+        //   string += "\r\n";
+        //   string += "Powered by **[Search Current Events](http://www.searchcurrentevents.com)** Beep Beep Boop";
+
+        //   // console.log(string);
+        //   // console.log("\r\n");
+        //   // console.log(string + "\r\n");
+        //   // console.log(id + ": " + url + "\r\n");
+        //   r.getSubmission(id).reply(string);
+          
+          subreddits = body.split("\n");
+          // console.log(subreddits.length);
+          // subreddits.forEach(function(subreddit) {
+            // if (subreddit.length != "") {
+            //   console.log(subreddit);
+            // }
+          // });
+          return subreddits;
+        
+          
+          
+        
+      } else {
+        console.log("Error: " + error);
+      } 
+    });
+}
+
 function getNew(subreddit) {
   r.getNew(subreddit).map(post => post).forEach(function(postId, index) {
-    console.log("\r\n" + subreddit + "\r\n");
+    // console.log("\r\n" + subreddit + "\r\n");
     var id = postId.id;
     var url = postId.url;
     // console.log(url);
@@ -73,33 +216,34 @@ function getNew(subreddit) {
         body:    "url=" + url + "&id=" + id
         }, function(error, response, body){
           if(!error) {
+            if (response.statusCode == 404) {
+              return;
+            }
             var articleSummary = body;
 
-            if (articleSummary.match(/Blacklisted url/) || articleSummary.match(/Already posted/) || articleSummary.match(/Article summary failed/) || articleSummary.match(/Article not found/) || articleSummary.match(/PHP Warning/i) || articleSummary.match(/PHP Fatal/i) || articleSummary.match(/Article length too long/i) || articleSummary.match(/\<\!DOCTYPE HTML PUBLIC/)) {
+            if (articleSummary.match(/Blacklisted url/) || articleSummary.match(/Already posted/) || articleSummary.match(/Article summary failed/) || articleSummary.match(/Article not found/) || articleSummary.match(/PHP Warning/i) || articleSummary.match(/PHP Fatal/i) || articleSummary.match(/Article length too long/i) || articleSummary.match(/\<\!DOCTYPE/)) {
               console.log("Article not submitted: " + id + ": " + url);
             } else {
               var string = "";
               string += "\r\n";
-              string += "#Here is my best summary:";
+              string += "###Here is my best summary:";
               string += "\r\n";
               string += "\r\n";
               string += articleSummary;
               string += "\r\n";
               string += "\r\n";
-              string += "#Powered by [Search Current Events](http://www.searchcurrentevents.com) Beep Beep Boop";
+              string += "Powered by **[Search Current Events](http://www.searchcurrentevents.com)** Beep Beep Boop";
   
               // console.log(string);
-              console.log("\r\n");
-              console.log(string + "\r\n");
+              // console.log("\r\n");
+              // console.log(string + "\r\n");
               // console.log(id + ": " + url + "\r\n");
-              if (string.match(/Article length too long/ig)) {
-                return;
-              } else {
-                r.getSubmission(id).reply(string);
-              }
-              
-              
+              r.getSubmission(id).reply(string);
+              console.log("Posting article: " + id);
             }
+              
+              
+            
           } else {
             console.log("Error: " + error);
           } 
@@ -119,20 +263,24 @@ function getRising(subreddit) {
         body:    "url=" + url + "&id=" + id
         }, function(error, response, body){
           if(!error) {
+            // console.log(response.statusCode);
+            if (response.statusCode == 404) {
+              return;
+            }
             var articleSummary = body;
 
-            if (articleSummary.match(/Blacklisted url/) || articleSummary.match(/Already posted/) || articleSummary.match(/Article summary failed/) || articleSummary.match(/Article not found/) || articleSummary.match(/PHP Warning/i) || articleSummary.match(/PHP Fatal/i)) {
+            if (articleSummary.match(/Blacklisted url/) || articleSummary.match(/Already posted/) || articleSummary.match(/Article summary failed/) || articleSummary.match(/Article not found/) || articleSummary.match(/PHP Warning/i) || articleSummary.match(/PHP Fatal/i) || articleSummary.match(/Article length too long/i) || articleSummary.match(/\<\!DOCTYPE/)) {
               console.log("Article not submitted: " + id + ": " + url);
             } else {
               var string = "";
               string += "\r\n";
-              string += "#Here is my best summary:";
+              string += "###Here is my best summary:";
               string += "\r\n";
               string += "\r\n";
               string += articleSummary;
               string += "\r\n";
               string += "\r\n";
-              string += "#Powered by [Search Current Events](http://www.searchcurrentevents.com) Beep Beep Boop";
+              string += "Powered by **[Search Current Events](http://www.searchcurrentevents.com)** Beep Beep Boop";
   
               // console.log(string);
               console.log("\r\n");
@@ -161,20 +309,23 @@ function getControversial(subreddit) {
         body:    "url=" + url + "&id=" + id
         }, function(error, response, body){
           if(!error) {
+            if (response.statusCode == 404) {
+              return;
+            }
             var articleSummary = body;
 
-            if (articleSummary.match(/Blacklisted url/) || articleSummary.match(/Already posted/) || articleSummary.match(/Article summary failed/) || articleSummary.match(/Article not found/) || articleSummary.match(/PHP Warning/i) || articleSummary.match(/PHP Fatal/i)) {
+            if (articleSummary.match(/Blacklisted url/) || articleSummary.match(/Already posted/) || articleSummary.match(/Article summary failed/) || articleSummary.match(/Article not found/) || articleSummary.match(/PHP Warning/i) || articleSummary.match(/PHP Fatal/i) || articleSummary.match(/Article length too long/i) || articleSummary.match(/\<\!DOCTYPE/)) {
               console.log("Article not submitted: " + id + ": " + url);
             } else {
               var string = "";
               string += "\r\n";
-              string += "#Here is my best summary:";
+              string += "###Here is my best summary:";
               string += "\r\n";
               string += "\r\n";
               string += articleSummary;
               string += "\r\n";
               string += "\r\n";
-              string += "#Powered by [Search Current Events](http://www.searchcurrentevents.com) Beep Beep Boop";
+              string += "Powered by **[Search Current Events](http://www.searchcurrentevents.com)** Beep Beep Boop";
   
               // console.log(string);
               console.log("\r\n");
@@ -203,20 +354,23 @@ function getTop(subreddit) {
         body:    "url=" + url + "&id=" + id
         }, function(error, response, body){
           if(!error) {
+            if (response.statusCode == 404) {
+              return;
+            }
             var articleSummary = body;
 
-            if (articleSummary.match(/Blacklisted url/) || articleSummary.match(/Already posted/) || articleSummary.match(/Article summary failed/) || articleSummary.match(/Article not found/) || articleSummary.match(/PHP Warning/i) || articleSummary.match(/PHP Fatal/i)) {
+            if (articleSummary.match(/Blacklisted url/) || articleSummary.match(/Already posted/) || articleSummary.match(/Article summary failed/) || articleSummary.match(/Article not found/) || articleSummary.match(/PHP Warning/i) || articleSummary.match(/PHP Fatal/i) || articleSummary.match(/Article length too long/i) || articleSummary.match(/\<\!DOCTYPE/)) {
               console.log("Article not submitted: " + id + ": " + url);
             } else {
               var string = "";
               string += "\r\n";
-              string += "#Here is my best summary:";
+              string += "###Here is my best summary:";
               string += "\r\n";
               string += "\r\n";
               string += articleSummary;
               string += "\r\n";
               string += "\r\n";
-              string += "#Powered by [Search Current Events](http://www.searchcurrentevents.com) Beep Beep Boop";
+              string += "Powered by **[Search Current Events](http://www.searchcurrentevents.com)** Beep Beep Boop";
   
               // console.log(string);
               console.log("\r\n");
