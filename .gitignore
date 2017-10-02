@@ -1,1 +1,6 @@
 news-summary/vendor/
+jobsearch/vendor/
+redditbot/config/
+redditbot/node_modules/
+redditbot/vendor/
+copyToClipboard/node_modules/
